@@ -1,0 +1,427 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #00ffff;
+    --secondary-color: #ff00ff;
+    --accent-color: #ffff00;
+    --success-color: #00ff00;
+    --warning-color: #ff9900;
+    --bg-dark: #0a0a1a;
+    --bg-card: #151530;
+    --bg-card-hover: #1a1a40;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0d0;
+    --border-glow: rgba(0, 255, 255, 0.3);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, #0d0d2b 50%, #1a0a2e 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header styles */
+.header {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(180deg, rgba(0, 255, 255, 0.1) 0%, transparent 100%);
+    border-bottom: 2px solid var(--border-glow);
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+}
+
+.header .subtitle {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.3);
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+}
+
+.header .status {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: rgba(0, 255, 0, 0.2);
+    border: 1px solid var(--success-color);
+    border-radius: 25px;
+    color: var(--success-color);
+    font-weight: bold;
+    animation: borderPulse 2s ease-in-out infinite;
+}
+
+/* Verification Grid */
+.verification-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.verification-card {
+    background: var(--bg-card);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid var(--border-glow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.verification-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+.verification-card:hover {
+    background: var(--bg-card-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+}
+
+.verification-card h3 {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.verification-card .status-indicator {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.verification-card .status-indicator.verified {
+    color: var(--success-color);
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.verification-card .status-indicator.audit {
+    color: var(--warning-color);
+    text-shadow: 0 0 10px rgba(255, 153, 0, 0.5);
+}
+
+.verification-card .metric {
+    color: var(--text-secondary);
+}
+
+.verification-card .metric strong {
+    color: var(--accent-color);
+}
+
+.verification-card .date {
+    font-size: 2rem;
+    color: var(--primary-color);
+    font-weight: bold;
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+.verification-card .countdown-text {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+.verification-card .countdown {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.countdown-item {
+    background: rgba(0, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--primary-color);
+}
+
+.countdown-item .number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.countdown-complete {
+    color: var(--success-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.countdown-item .label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+/* Mission Section */
+.mission {
+    background: var(--bg-card);
+    border-radius: 15px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border: 1px solid var(--border-glow);
+}
+
+.mission h2 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.mission-description {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.mission-description strong {
+    color: var(--accent-color);
+}
+
+.audit-checklist {
+    list-style: none;
+}
+
+.audit-checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(0, 255, 0, 0.05);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--success-color);
+    transition: all 0.3s ease;
+}
+
+.audit-checklist li:hover {
+    background: rgba(0, 255, 0, 0.1);
+    transform: translateX(5px);
+}
+
+.audit-checklist .check {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.audit-checklist .item-content {
+    color: var(--text-secondary);
+}
+
+.audit-checklist .item-content strong {
+    color: var(--text-primary);
+}
+
+/* Origin Section */
+.origin {
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(75, 0, 130, 0.3) 100%);
+    border-radius: 15px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border: 2px solid rgba(138, 43, 226, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.origin::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(138, 43, 226, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.origin h2 {
+    color: #da70d6;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(218, 112, 214, 0.5);
+    position: relative;
+    z-index: 1;
+}
+
+.origin-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.origin-title {
+    font-size: 1.4rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+}
+
+.origin-description {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+.origin-description strong {
+    color: var(--primary-color);
+}
+
+.origin-legacy {
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+
+.origin-legacy em {
+    color: #da70d6;
+    font-weight: bold;
+}
+
+/* Next Phase Section */
+.next-phase {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(180deg, transparent 0%, rgba(255, 0, 255, 0.1) 100%);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    margin-bottom: 3rem;
+}
+
+.next-phase h2 {
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.next-phase .test-date {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.next-phase .test-date strong {
+    color: var(--accent-color);
+}
+
+.next-phase .inscription {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.next-phase .inscription em {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-glow);
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes borderPulse {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .verification-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .mission {
+        padding: 1.5rem;
+    }
+    
+    .audit-checklist li {
+        flex-direction: column;
+        text-align: center;
+    }
+}
