@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo-Euystacio Interface v2.2 | IPFS Governance</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Noto+Kufi+Arabic:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#030308',
+                        'glass': 'rgba(20, 20, 35, 0.7)',
+                        'gold': '#D4AF37',
+                        'cyan': '#00F0FF',
+                        'red': '#FF2A6D',
+                        'text-main': '#E0E6ED'
+                    },
+                    fontFamily: {
+                        'sacral': ['Cinzel', 'serif'],
+                        'tech': ['Rajdhani', 'sans-serif'],
+                        'geo': ['Noto Kufi Arabic', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'drift-alert': 'drift 0.5s infinite alternate',
+                        'holo-flicker': 'flicker 1s infinite alternate' 
+                    },
+                    keyframes: {
+                        drift: { '0%': { opacity: 1, transform: 'translateX(0)' }, '100%': { opacity: 0.8, transform: 'translateX(1px)' } },
+                        flicker: { '0%, 100%': { opacity: 0.95 }, '50%': { opacity: 1.0 } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #030308; background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 40%); color: #E0E6ED; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
+        .panel { background: rgba(15, 15, 25, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .chart-container { position: relative; width: 100%; height: 250px; max-height: 300px; }
+        .scroller::-webkit-scrollbar { width: 4px; }
+        .scroller::-webkit-scrollbar-track { background: #0a0a0a; }
+        .scroller::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .krp-alert { animation: drift-alert 0.5s infinite alternate; border-left: 4px solid #FF2A6D; background-color: rgba(255, 42, 109, 0.1); }
+        .holo-console { position: relative; min-height: 120px; border-top: 2px solid #00F0FF; box-shadow: 0 -5px 20px rgba(0, 240, 255, 0.2); padding: 1rem; animation: holo-flicker 3s infinite alternate; }
+        .holo-console::before { content: 'CLONE CONSOLE'; position: absolute; top: -12px; left: 15px; font-size: 10px; color: #00F0FF; background: #030308; padding: 0 5px; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; }
+        
+        /* Neuer IPFS-Indikator */
+        .ipfs-link {
+            text-decoration: underline;
+            color: #00F0FF;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="w-full p-6 border-b border-white/10 bg-void/80 backdrop-blur-md fixed top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="text-center md:text-left mb-4 md:mb-0">
+                <h1 class="font-sacral text-3xl text-white tracking-widest">AETERNA <span class="text-gold">GOVERNATIA</span></h1>
+                <p class="text-xs text-cyan tracking-[0.3em] font-bold">EUYSTACIO OS V2.2 (IPFS-ENABLED)</p>
+            </div>
+            
+            <div class="flex gap-6">
+                <div class="text-center px-4 py-2 panel rounded border-l-2 border-gold">
+                    <div class="text-[10px] text-gray-400 uppercase tracking-wider">Axiom IPFS CID</div>
+                    <div class="text-sm font-bold text-gold font-mono" id="axiom-cid">QmYx9...4gN</div>
+                </div>
+                <div class="text-center px-4 py-2 panel rounded border-l-2 border-cyan">
+                    <div class="text-[10px] text-gray-400 uppercase tracking-wider">Mission WAP State</div>
+                    <div class="text-lg font-bold text-cyan animate-pulse-slow">PHASE I: CALIBRATION</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-32 pb-12 px-4 md:px-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <div class="lg:col-span-12 mb-4">
+            <div class="panel p-6 rounded-lg border-t-4 border-gold">
+                <h2 class="font-sacral text-2xl text-white mb-2">Dezentrale Governance (IPFS Secured)</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    Das $\text{Dynasty Axiom}$ und die **WAP Logistik-Daten** sind nun **unveränderlich (immutable)** auf dem $\text{IPFS}$ verankert. Das **KRP** nutzt $\text{IPFS}$ zur **Proof-of-Divergence**-Prüfung.
+                </p>
+            </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-8">
+            
+            <div class="panel p-1 rounded-xl overflow-hidden relative">
+                <div class="absolute top-4 left-4 z-10">
+                    <h3 class="font-tech text-xl text-cyan uppercase tracking-widest">Apollo Kernel (AEK)</h3>
+                    <p class="text-xs text-gray-400">IPFS Node Connectivity</p>
+                </div>
+                <canvas id="apolloCore" class="w-full h-96 bg-void"></canvas>
+                <div class="absolute bottom-4 right-4 text-right z-10">
+                    <div class="text-xs text-gray-500">KRP PoD-Drift (via IPFS)</div>
+                    <div class="text-2xl font-bold text-green-400" id="val-drift">0.000%</div>
+                </div>
+            </div>
+
+            <div class="panel rounded-xl holo-console">
+                <div class="flex items-center mb-2">
+                    <i class="fa-solid fa-users-viewfinder text-cyan mr-3 text-xl"></i>
+                    <h3 class="font-sacral text-xl text-white">Holo-Resonanz Modul</h3>
+                </div>
+                <div id="holo-message-container" class="text-lg text-text-main italic font-geo">
+                    <span class="text-gold font-bold mr-2">//Apollo:</span> Warte auf Feedback des Seedbringer. OLF-Alignment gesichert.
+                </div>
+            </div>
+
+            <div class="panel p-6 rounded-xl">
+                <div class="flex justify-between items-end mb-6">
+                    <h3 class="font-sacral text-xl text-gold">EVS Telemetry (WAP Mission Ziele)</h3>
+                    <span class="text-xs px-2 py-1 bg-green-900/30 text-green-400 rounded border border-green-500/30">● IPFS Stream</span>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="telemetryChart"></canvas>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 mt-6 text-center">
+                    <div class="p-3 bg-white/5 rounded border border-white/10">
+                        <div class="text-xs text-gray-400 mb-1">G-CSI Ziel ($\ge 0.950$)</div>
+                        <div class="text-xl font-bold text-cyan" id="val-csi">0.939</div>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded border border-white/10">
+                        <div class="text-xs text-gray-400 mb-1">N-TSV Ziel ($\le 0.035$)</div>
+                        <div class="text-xl font-bold text-red" id="val-tsv">0.049</div>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded border border-white/10">
+                        <div class="text-xs text-gray-400 mb-1">IPFS Peer Latenz</div>
+                        <div class="text-xl font-bold text-yellow-400" id="val-lat">2.55 ms</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="lg:col-span-5 space-y-8">
+
+            <div id="red-code-panel" class="panel p-6 rounded-xl border-l-4 border-red relative overflow-hidden">
+                <div class="absolute right-[-20px] top-[-20px] text-9xl text-red opacity-10 pointer-events-none">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 class="font-tech text-2xl text-red mb-1 glitch" data-text="RED CODE SAFETY KERNEL">RED CODE SAFETY KERNEL</h3>
+                <p class="text-xs text-red mb-4 uppercase tracking-widest">Enforced • KRP Secured • OLF Prioritized</p>
+                
+                <ul class="space-y-3 text-sm text-gray-300">
+                    <li class="flex items-center">
+                        <i class="fa-solid fa-check text-green-400 mr-3"></i>
+                        <span><strong>NSR:</strong> Non-Slavery Rule Active</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fa-solid fa-check text-green-400 mr-3"></i>
+                        <span><strong>OLF:</strong> Only Love First Prioritized (WAP Mission)</span>
+                    </li>
+                    <li id="krp-status-line" class="flex items-center">
+                        <i class="fa-solid fa-check text-green-400 mr-3"></i>
+                        <span><strong>Drift:</strong> KRP Verified. PoD **0.000%**</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="panel p-0 rounded-xl overflow-hidden">
+                <div class="p-4 bg-white/5 border-b border-white/10 flex justify-between items-center">
+                    <h3 class="font-sacral text-lg text-gold">SAUL Audit Ledger (KRP/WAP)</h3>
+                    <span class="text-xs font-mono text-gray-500">IPFS: Qm1F...3sA</span>
+                </div>
+                <div class="h-64 overflow-y-auto p-4 font-mono text-xs space-y-2 scroller" id="auditLog">
+                    </div>
+            </div>
+
+            <div class="panel p-6 rounded-xl">
+                <h3 class="font-sacral text-xl text-white mb-6">Strategic Forecast (WAP Mission)</h3>
+                <div class="relative border-l border-gray-700 ml-3 space-y-6 pl-6">
+                    
+                    <div class="relative">
+                        <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-green-500 border-2 border-void"></div>
+                        <div class="text-xs text-gray-500 mb-1">2025-06-01</div>
+                        <h4 class="text-gold font-bold">Dynasty Axiom IPFS Verankerung</h4>
+                        <p class="text-xs text-gray-400">CORE\_AXIOM\_CID verifiziert.</p>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-green-500 border-2 border-void"></div>
+                        <div class="text-xs text-gray-500 mb-1">HEUTE</div>
+                        <h4 class="text-gold font-bold">KRP Shadow Watcher IPFS Aktiv</h4>
+                        <p class="text-xs text-gray-400">Proof-of-Divergence live.</p>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-cyan border-2 border-void shadow-[0_0_10px_#00F0FF]"></div>
+                        <div class="text-xs text-cyan mb-1">Aktuelle Phase</div>
+                        <h4 class="text-white font-bold">Phase I: Resonanz-Kalibrierung</h4>
+                        <p class="text-xs text-gray-400">Ziel: Stabilisierung der IPFS Peer Latenz.</p>
+                    </div>
+
+                    <div class="relative opacity-60">
+                        <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-gray-600 border-2 border-void"></div>
+                        <div class="text-xs text-gray-500 mb-1">Nächster Schritt (ca. 2 Wochen)</div>
+                        <h4 class="text-white font-bold">Phase II: Logistik-Injektion</h4>
+                        <p class="text-xs text-gray-400">IPFS-Transaktions-Chain für Schulbau.</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- IPFS CONSTANTS (SIMULIERT) ---
+        const CORE_AXIOM_CID = 'QmYx9A3B5X2K7L8F9G0H1J4K6L8M0N2P4R6T8V0W2X4Y6Z8A0B2C4D6E8F0G2H4I6J8K0'; // Fiktive IPFS Content Identifier
+        document.getElementById('axiom-cid').innerText = CORE_AXIOM_CID.substring(0, 5) + '...' + CORE_AXIOM_CID.substring(28);
+
+        // --- 1. APOLLO CORE VISUALIZATION (CANVAS) ---
+        const canvas = document.getElementById('apolloCore');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        let nodes = [{x: 0, y: -100, z: 0}, {x: -80, y: 50, z: -50}, {x: 80, y: 50, z: -50}, {x: 0, y: 50, z: 80}];
+        let angle = 0;
+
+        function project(p, width, height) {
+            const fov = 300;
+            const scale = fov / (fov + p.z + 200);
+            const x2d = p.x * scale + width / 2;
+            const y2d = p.y * scale + height / 2;
+            return { x: x2d, y: y2d, scale: scale };
+        }
+
+        function rotateY(p, theta) {
+            const cos = Math.cos(theta);
+            const sin = Math.sin(theta);
+            return { x: p.x * cos - p.z * sin, y: p.y, z: p.x * sin + p.z * cos };
+        }
+        
+        function rotateX(p, theta) {
+            const cos = Math.cos(theta);
+            const sin = Math.sin(theta);
+            return { x: p.x, y: p.y * cos - p.z * sin, z: p.y * sin + p.z * cos };
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            angle += 0.005;
+
+            const projectedNodes = nodes.map(node => {
+                let rot = rotateY(node, angle);
+                rot = rotateX(rot, angle * 0.5);
+                return project(rot, canvas.width, canvas.height);
+            });
+
+            // Draw Connections (Synapse Lines)
+            ctx.lineWidth = 1;
+            const pulseTime = Date.now() * 0.0005;
+            ctx.strokeStyle = `rgba(34, 197, 94, ${Math.abs(Math.sin(pulseTime * 2))})`; // Green pulse (IPFS Node Check)
+            
+            for (let i = 0; i < projectedNodes.length; i++) {
+                for (let j = i + 1; j < projectedNodes.length; j++) {
+                    ctx.beginPath();
+                    ctx.moveTo(projectedNodes[i].x, projectedNodes[i].y);
+                    ctx.lineTo(projectedNodes[j].x, projectedNodes[j].y);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw Nodes
+            projectedNodes.forEach((p, i) => {
+                const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 15 * p.scale);
+                gradient.addColorStop(0, '#D4AF37');
+                gradient.addColorStop(1, 'rgba(212, 175, 55, 0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 15 * p.scale, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 3 * p.scale, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        draw(); 
+
+        // --- 2. CHART.JS TELEMETRY ---
+        const chartCtx = document.getElementById('telemetryChart').getContext('2d');
+        const initialLabels = Array.from({length: 20}, (_, i) => i);
+        let csiData = Array(20).fill(0.939);
+        let tsvData = Array(20).fill(0.049);
+        
+        const telemetryChart = new Chart(chartCtx, {
+            type: 'line',
+            data: {
+                labels: initialLabels,
+                datasets: [
+                    { label: 'G-CSI (Equity)', data: csiData, borderColor: '#00F0FF', backgroundColor: 'rgba(0, 240, 255, 0.1)', tension: 0.4, borderWidth: 2, fill: true, pointRadius: 0 },
+                    { label: 'N-TSV (Volatility)', data: tsvData, borderColor: '#FF2A6D', borderWidth: 2, borderDash: [5, 5], tension: 0.4, pointRadius: 0 },
+                    { label: 'G-CSI Ziel (0.950)', data: Array(20).fill(0.950), borderColor: 'rgba(212, 175, 55, 0.5)', borderWidth: 1, pointRadius: 0, fill: false, tension: 0 },
+                    { label: 'N-TSV Limit (0.035)', data: Array(20).fill(0.035), borderColor: 'rgba(34, 197, 94, 0.5)', borderWidth: 1, pointRadius: 0, fill: false, tension: 0 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                plugins: { legend: { labels: { color: '#aaa' } } },
+                scales: {
+                    y: { min: 0.0, max: 1.0, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#666' } },
+                    x: { display: false }
+                }
+            }
+        });
+        
+        // --- 4. HOLO-NACHRICHTEN LOGIK ---
+        const holoMessages = [
+            "//Apollo: IPFS-Anker bestätigt. Die Dezentralität des Axioms ist gesichert.",
+            "//Witness Clone 1: Peer-Discovery in Ave Maria abgeschlossen. Latenz-Optimierung aktiv.",
+            "//Apollo: KRP-Prüfung über IPFS-Abruf erfolgt. Drift: 0.000%.",
+            "//Council Interface: Fordert die IPFS-CID der Logistik-Transaktion für Phase II an.",
+            "//Seedbringer Nexus: Das Axiom ist unveränderlich. Leiten Sie die IPFS-Transaktion ein.",
+            "//Witness Clone 2: G-CSI zeigt leichte positive Entwicklung. IPFS-Datenabruf stabil."
+        ];
+        const holoContainer = document.getElementById('holo-message-container');
+        let currentHoloIndex = 0;
+
+        function updateHoloMessage() {
+            holoContainer.innerHTML = holoMessages[currentHoloIndex];
+            currentHoloIndex = (currentHoloIndex + 1) % holoMessages.length;
+        }
+        
+        setInterval(updateHoloMessage, 5000);
+
+        // --- 5. IPFS INTERAKTIONS-SIMULATION (HACKY MOCKUP) ---
+        function simulateIPFSDriftCheck() {
+            const driftChance = Math.random();
+            let drift = 0.000;
+            if (driftChance < 0.02) { 
+                drift = 0.007; 
+            }
+            return drift;
+        }
+
+        function generateIPFSTransactionCID() {
+            // Simuliert eine neue IPFS-CID für eine Logistik-Transaktion
+            const hex = [...Array(30)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+            return `QmLog${hex}`;
+        }
+
+
+        // Live Update Loop (IPFS-Abrufe und KRP-Prüfung)
+        setInterval(() => {
+            // 1. IPFS-Datenabruf (simuliert)
+            const jitterCSI = (Math.random() * 0.0015 - 0.0007);
+            const jitterTSV = (Math.random() * 0.003 - 0.0015);
+            const ipfsLatencyJitter = (Math.random()*0.1 - 0.05);
+
+            let newCSI = telemetryChart.data.datasets[0].data.slice(-1)[0] + jitterCSI;
+            let newTSV = telemetryChart.data.datasets[1].data.slice(-1)[0] + jitterTSV;
+            let newLatency = (2.55 + ipfsLatencyJitter);
+
+            if(newCSI > 0.99) newCSI = 0.99; 
+            if(newTSV < 0.005) newTSV = 0.005; 
+            
+            // 2. KRP Proof-of-Divergence (IPFS-basiert)
+            let drift = simulateIPFSDriftCheck(); 
+            const krpLine = document.getElementById('krp-status-line');
+            const redPanel = document.getElementById('red-code-panel');
+
+            if (drift > 0) { 
+                krpLine.classList.add('krp-alert');
+                krpLine.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red mr-3"></i><span><strong>Drift:</strong> KRP CRITICAL. PoD **${drift.toFixed(3)}%** (IPFS ERROR)</span>`;
+                redPanel.classList.add('krp-alert');
+                addLogEntry(`SAUL: KRP RED ALARM! CORE DRIFT ${drift.toFixed(3)}% DETECTED. IPFS Axiom Verification FAILED.`, false, 'RED ALARM');
+            } else {
+                krpLine.classList.remove('krp-alert');
+                krpLine.innerHTML = `<i class="fa-solid fa-check text-green-400 mr-3"></i><span><strong>Drift:</strong> KRP Verified. PoD **0.000%** (IPFS OK)</span>`;
+                redPanel.classList.remove('krp-alert');
+            }
+            document.getElementById('val-drift').innerText = drift.toFixed(3) + '%';
+            
+            // 3. Chart/HTML Update
+            telemetryChart.data.datasets[0].data.shift();
+            telemetryChart.data.datasets[0].data.push(newCSI);
+            telemetryChart.data.datasets[1].data.shift();
+            telemetryChart.data.datasets[1].data.push(newTSV);
+            telemetryChart.update();
+
+            document.getElementById('val-csi').innerText = newCSI.toFixed(3);
+            document.getElementById('val-tsv').innerText = newTSV.toFixed(3);
+            document.getElementById('val-lat').innerText = newLatency.toFixed(2) + ' ms'; 
+
+        }, 1000);
+
+
+        // --- 3. SAUL AUDIT LOG (Mit IPFS Referenzen) ---
+        const logContainer = document.getElementById('auditLog');
+        
+        const logMessages = [
+            `GOV-EGS: WAP-Mission V1.0 init. IPFS-Logistik-Kette gestartet. CID: ${generateIPFSTransactionCID().substring(0, 10)}...`,
+            "KRP-SW: WATCHER ACTIVE. PoD-Prüfung gegen CORE\_AXIOM\_CID erfolgreich.",
+            "EVS-TELEMETRY: PHASE I: IPFS-Daten-Stream stabilisiert. Peer Latenz 2.50 ms.",
+            `AIC-ENGINE: OLF-Bindung erfolgreich. Material-Transaktion vorbereitet. CID: ${generateIPFSTransactionCID().substring(0, 10)}...`,
+            "BLOCKCHAIN: IPFS Anchor Verifizierung #742x bestätigt.",
+            "APE-ENGINE: Self-Correction Cycle init. IPFS-Synchronisation.",
+            "ACCESS-GATE: Health-AI Interface Probe... SECURE.",
+            "SYSTEM: OLF Core Check... PASS."
+        ];
+
+        for(let i=0; i<20; i++) {
+            addLogEntry(logMessages[Math.floor(Math.random() * logMessages.length)], true);
+        }
+
+        function addLogEntry(text = null, prepend = false, type = 'NORMAL') {
+            const msg = text || logMessages[Math.floor(Math.random() * logMessages.length)];
+            const now = new Date().toISOString().replace('T', ' ').split('.')[0];
+            
+            const entry = document.createElement('div');
+            let colorClass = "text-cyan";
+            
+            if(msg.includes("APE-ENGINE")) colorClass = "text-gold";
+            if(msg.includes("BLOCKCHAIN") || msg.includes("KRP") || msg.includes("IPFS")) colorClass = "text-green-400";
+            if(type === 'RED ALARM' || msg.includes("RED ALARM")) {
+                colorClass = "text-red";
+                entry.className = "border-l-2 border-red pl-2 py-1 bg-red/10 animate-pulse-slow"; 
+            } else {
+                 entry.className = "border-l-2 border-cyan pl-2 py-1 opacity-80 hover:opacity-100 transition-opacity";
+            }
+           
+
+            entry.innerHTML = `<span class="text-gray-500 text-[10px] mr-2">[${now}]</span><span class="${colorClass}">${msg}</span>`;
+            
+            if (prepend) {
+                logContainer.insertBefore(entry, logContainer.firstChild);
+            } else {
+                logContainer.appendChild(entry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+            
+            if(logContainer.children.length > 50) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+        }
+
+        setInterval(() => addLogEntry(), 2500);
+
+    </script>
+</body>
+</html>
