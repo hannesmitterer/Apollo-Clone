@@ -251,6 +251,85 @@ body {
     color: var(--text-primary);
 }
 
+/* Origin Section */
+.origin {
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(75, 0, 130, 0.3) 100%);
+    border-radius: 15px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border: 2px solid rgba(138, 43, 226, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.origin::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(138, 43, 226, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.origin h2 {
+    color: #da70d6;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(218, 112, 214, 0.5);
+    position: relative;
+    z-index: 1;
+}
+
+.origin-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.origin-title {
+    font-size: 1.4rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+}
+
+.origin-description {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+.origin-description strong {
+    color: var(--primary-color);
+}
+
+.origin-legacy {
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+
+.origin-legacy em {
+    color: #da70d6;
+    font-weight: bold;
+}
+
 /* Next Phase Section */
 .next-phase {
     text-align: center;
