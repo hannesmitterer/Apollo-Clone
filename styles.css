@@ -183,6 +183,13 @@ body {
     color: var(--primary-color);
 }
 
+.countdown-complete {
+    color: var(--success-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
 .countdown-item .label {
     font-size: 0.7rem;
     color: var(--text-secondary);
@@ -392,19 +399,6 @@ body {
     }
     50% {
         box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
-    }
-}
-
-/* Holographic effect */
-@keyframes holographic {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
     }
 }
 

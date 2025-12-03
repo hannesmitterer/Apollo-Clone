@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const diff = coronationDate - now;
 
         if (diff <= 0) {
-            countdownElement.innerHTML = '<p style="color: var(--success-color); font-weight: bold;">IL MOMENTO È ARRIVATO!</p>';
+            countdownElement.innerHTML = '<p class="countdown-complete">IL MOMENTO È ARRIVATO!</p>';
             return;
         }
 
