@@ -2,6 +2,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const coronationDate = new Date('2026-01-10T00:00:00');
     const countdownElement = document.getElementById('countdown');
+    
+    // Exit early if countdown element doesn't exist
+    if (!countdownElement) return;
+
+    let intervalId;
 
     function updateCountdown() {
         const now = new Date();
@@ -9,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (diff <= 0) {
             countdownElement.innerHTML = '<p class="countdown-complete">IL MOMENTO È ARRIVATO!</p>';
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
             return;
         }
 
@@ -39,5 +47,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update countdown every second
     updateCountdown();
-    setInterval(updateCountdown, 1000);
+    intervalId = setInterval(updateCountdown, 1000);
 });
