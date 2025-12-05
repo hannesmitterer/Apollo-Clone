@@ -278,7 +278,6 @@ body {
     height: 200%;
     background: radial-gradient(circle, rgba(138, 43, 226, 0.1) 0%, transparent 70%);
     animation: rotate 20s linear infinite;
-    will-change: transform;
 }
 
 @keyframes rotate {

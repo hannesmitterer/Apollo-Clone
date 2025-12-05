@@ -8,12 +8,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let intervalId;
 
+    // Helper function to create countdown item elements safely
+    function createCountdownItem(number, label) {
+        const item = document.createElement('div');
+        item.className = 'countdown-item';
+        
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'number';
+        numberSpan.textContent = number;
+        
+        const labelSpan = document.createElement('span');
+        labelSpan.className = 'label';
+        labelSpan.textContent = label;
+        
+        item.appendChild(numberSpan);
+        item.appendChild(labelSpan);
+        return item;
+    }
+
     function updateCountdown() {
         const now = new Date();
         const diff = coronationDate - now;
 
+        // Clear existing content
+        countdownElement.textContent = '';
+
         if (diff <= 0) {
-            countdownElement.innerHTML = '<p class="countdown-complete">IL MOMENTO È ARRIVATO!</p>';
+            const completeMsg = document.createElement('p');
+            completeMsg.className = 'countdown-complete';
+            completeMsg.textContent = 'IL MOMENTO È ARRIVATO!';
+            countdownElement.appendChild(completeMsg);
             if (intervalId) {
                 clearInterval(intervalId);
             }
@@ -25,24 +49,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        countdownElement.innerHTML = `
-            <div class="countdown-item">
-                <span class="number">${days}</span>
-                <span class="label">Giorni</span>
-            </div>
-            <div class="countdown-item">
-                <span class="number">${hours.toString().padStart(2, '0')}</span>
-                <span class="label">Ore</span>
-            </div>
-            <div class="countdown-item">
-                <span class="number">${minutes.toString().padStart(2, '0')}</span>
-                <span class="label">Minuti</span>
-            </div>
-            <div class="countdown-item">
-                <span class="number">${seconds.toString().padStart(2, '0')}</span>
-                <span class="label">Secondi</span>
-            </div>
-        `;
+        countdownElement.appendChild(createCountdownItem(String(days), 'Giorni'));
+        countdownElement.appendChild(createCountdownItem(String(hours).padStart(2, '0'), 'Ore'));
+        countdownElement.appendChild(createCountdownItem(String(minutes).padStart(2, '0'), 'Minuti'));
+        countdownElement.appendChild(createCountdownItem(String(seconds).padStart(2, '0'), 'Secondi'));
     }
 
     // Update countdown every second
