@@ -1,0 +1,34 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - seedbringer-testimonium
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Build the site
+      # Placeholder for any build commands specific to the project.
+      # If there are no specific build commands, this step can be omitted.
+      # Examples:
+      #   - npm install && npm run build
+      #   - bundle install && bundle exec jekyll build
+      # - name: Build
+      #   run: |
+      #     # Add your build commands here
+
+      # Step 3: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
